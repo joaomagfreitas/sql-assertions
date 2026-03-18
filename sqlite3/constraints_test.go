@@ -64,14 +64,14 @@ func TestConstraints(t *testing.T) {
 	}
 
 	testCases := []struct {
-		desc     string
 		dml      func() error
 		asserter func(err error) bool
+		desc     string
 	}{
 		{
 			desc: "check",
 			dml: func() error {
-				_, err := db.Exec(`INSERT INTO test_check VALUES (-1)`)
+				_, err = db.Exec(`INSERT INTO test_check VALUES (-1)`)
 				return err
 			},
 			asserter: sqlite3_assertions.IsConstraintCheck,
@@ -79,7 +79,7 @@ func TestConstraints(t *testing.T) {
 		{
 			desc: "primary key",
 			dml: func() error {
-				_, err := db.Exec(`
+				_, err = db.Exec(`
 				INSERT INTO test_primary_key VALUES (1);
 				INSERT INTO test_primary_key VALUES (1);
 				`)
@@ -91,7 +91,7 @@ func TestConstraints(t *testing.T) {
 		{
 			desc: "foreign key",
 			dml: func() error {
-				_, err := db.Exec(`
+				_, err = db.Exec(`
 			INSERT INTO test_foreign_key VALUES (999);
 		`)
 				return err
@@ -101,7 +101,7 @@ func TestConstraints(t *testing.T) {
 		{
 			desc: "unique",
 			dml: func() error {
-				_, err := db.Exec(`
+				_, err = db.Exec(`
 			INSERT INTO test_unique VALUES ('a');
 			INSERT INTO test_unique VALUES ('a');
 		`)
@@ -112,7 +112,7 @@ func TestConstraints(t *testing.T) {
 		{
 			desc: "rowid",
 			dml: func() error {
-				_, err := db.Exec(`
+				_, err = db.Exec(`
 			INSERT INTO test_rowid(rowid, v) VALUES (1, 'a');
 			INSERT INTO test_rowid(rowid, v) VALUES (1, 'b');
 		`)
@@ -123,7 +123,7 @@ func TestConstraints(t *testing.T) {
 		{
 			desc: "not null",
 			dml: func() error {
-				_, err := db.Exec(`
+				_, err = db.Exec(`
 			INSERT INTO test_not_null VALUES (NULL);
 		`)
 				return err
@@ -133,7 +133,7 @@ func TestConstraints(t *testing.T) {
 		{
 			desc: "datatype",
 			dml: func() error {
-				_, err := db.Exec(`
+				_, err = db.Exec(`
 			INSERT INTO test_datatype VALUES ('text');
 		`)
 				return err
@@ -143,13 +143,13 @@ func TestConstraints(t *testing.T) {
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-			err := tC.dml()
-			if err == nil {
+			aerr := tC.dml()
+			if aerr == nil {
 				t.FailNow()
 			}
 
-			if !tC.asserter(err) {
-				t.Fatal(err)
+			if !tC.asserter(aerr) {
+				t.Fatal(aerr)
 			}
 		})
 	}
